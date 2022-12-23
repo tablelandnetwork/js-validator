@@ -11,7 +11,7 @@ import tar from "tar";
 // src
 import { getDirname, getVersion } from "./module-specific.js";
 
-const version = "0.0.1-alpha-3"//getVersion();
+const version = getVersion();
 const _dirname = getDirname();
 
 const pipe = promisify(pipeline);
