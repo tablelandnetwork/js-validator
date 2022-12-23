@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/release/tablelandnetwork/js-template.svg)](https://github.com/tablelandnetwork/js-template/releases/latest)
 [![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg)](https://github.com/RichardLitt/standard-readme)
 
-> A package holding builds of the Validator [src](https://github.com/tablelandnetwork/go-tableland)
+> A package holding builds of the official Tableland Validator [src](https://github.com/tablelandnetwork/go-tableland)
 
 # Table of Contents
 
@@ -40,7 +40,7 @@ npm i @tableland/validator
 
 # Development
 
-TODO: write this section
+N/A
 
 # Contributing
 
