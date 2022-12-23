@@ -1,0 +1,63 @@
+{
+  "name": "@tableland/template",
+  "version": "0.0.0",
+  "description": "A template for @tableland typescript projects",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist/**/*.js?(.map)",
+    "dist/**/*.d.ts",
+    "src/**/*.ts"
+  ],
+  "scripts": {
+    "lint": "eslint '**/*.{js,ts}'",
+    "lint:fix": "npm run lint -- --fix",
+    "prettier": "prettier '**/*.{ts,json,sol,md}' --check",
+    "prettier:fix": "npm run prettier -- --write",
+    "format": "npm run prettier:fix && npm run lint:fix",
+    "prepublishOnly": "npm run build",
+    "test": "mocha",
+    "coverage": "c8 mocha --exit",
+    "clean": "rm -rf dist",
+    "build": "npx tsc"
+  },
+  "keywords": [
+    "tableland",
+    "sql",
+    "ethereum",
+    "database"
+  ],
+  "license": "MIT AND Apache-2.0",
+  "devDependencies": {
+    "@tableland/local": "^0.0.4",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.9",
+    "@typescript-eslint/eslint-plugin": "^5.46.1",
+    "@typescript-eslint/parser": "^5.43.0",
+    "c8": "^7.12.0",
+    "eslint": "^8.27.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "mocha": "^10.2.0",
+    "prettier": "^2.7.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "@tableland/sdk": "^3.1.5"
+  }
+}
