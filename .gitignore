@@ -3,3 +3,5 @@
 /coverage/
 .vscode
 .DS_Store
+
+/src/module-specific.ts
