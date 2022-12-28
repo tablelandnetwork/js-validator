@@ -1,4 +1,4 @@
-name: Build
+name: Release PR
 on: 
   repository_dispatch:
     types: [release-published]
