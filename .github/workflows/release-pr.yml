@@ -1,17 +1,44 @@
 name: Release PR
-on: 
-  repository_dispatch:
-    types: [release-published]
+# on: 
+#   repository_dispatch:
+#     types: [release-published]
+# TODO: remove workflow_dispatch this once the go-tableland repository_dispatch is triggering the running of this file
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Version of this release. TODO: this should be coming from client client_payload, not inputs"
+        required: true
+        default: "0.0.0-pre.0"
 
 jobs:
   release-pr:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Cache 📦
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Setup Node Environment ⬢
+        uses: actions/setup-node@v1
+        with:
+          node-version: 18
+
       - name: Update version in package.json
         id: version-bump
         uses: jaywcjlove/github-action-package@v1.3.0
         with:
-          version: ${{ github.event.client_payload.release_version }}
+          path: "./package.json"
+          version: ${{ github.event.inputs.release_version }}
 
       - run: echo "version - ${{ steps.info.outputs.version }}"
 
@@ -25,29 +52,26 @@ jobs:
         id: create-release-pr
         name: Create Release PR
         with:
-          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          # use textile.io machine once this file is working
+          # github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             try {
-              const releaseBranchName = 'refs/heads/release-pr-' + '${{ github.event.client_payload.release_version }}';
-              const prBody = '✅ This PR was created by the Release PR action for version ' + '${{ github.event.client_payload.release_version }}';
-
-              await github.rest.git.createRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: releaseBranchName,
-                sha: baseBranchSHA
-              });
+              const tag = '${{ github.event.inputs.release_version }}';
+              const releaseBranchName = 'refs/heads/release-pr-' + tag;
+              const baseBranch = 'main';
+              const prBody = '✅ This PR was created by the Release PR action for version ' + tag;
 
               await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: 'Release PR ' + '${{ github.event.client_payload.release_version }}',
+                title: 'Release PR ' + tag,
                 head: releaseBranchName,
                 base: baseBranch,
                 body: prBody
               });
-            } catch (error) {
-              console.log(error);
-              core.setFailed('Failed to create combined branch - maybe a branch by that name already exists?');
+            } catch (err) {
+              console.log(err);
+              core.setFailed('Failed to create release branch: ' + err.message);
               return;
             }

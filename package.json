@@ -34,7 +34,7 @@
     "clean": "rm -rf dist",
     "build:esm": "cp src/module-specific-esm.ts src/module-specific.ts && tsc -p tsconfig.json",
     "build:cjs": "cp src/module-specific-cjs.ts src/module-specific.ts && tsc -p tsconfig.cjs.json",
-    "build": "npm run clean && npm run build:esm && npm run build:cjs && node dist/esm/build.js && ./fixup.sh"
+    "build": "npm run clean && npm run build:esm && npm run build:cjs && node --experimental-fetch dist/esm/build.js && ./fixup.sh"
   },
   "keywords": [
     "tableland",

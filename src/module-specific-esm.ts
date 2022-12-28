@@ -5,11 +5,11 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "module";
 
-export const getDirname = function () {
+export const getDirname = function (): string {
   return dirname(fileURLToPath(import.meta.url));
 };
 
-export const getVersion = function () {
+export const getVersion = function (): string {
   // Need to enable importing a json file with typescript
   const _require = createRequire(import.meta.url);
   return _require("../../package.json").version;

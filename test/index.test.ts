@@ -3,6 +3,7 @@ import { describe, test } from "mocha";
 import { getAccounts, getConnection } from "@tableland/local";
 
 describe("index", function () {
+  this.timeout(25000);
   // Note that we're using the second account here
   const [, signer] = getAccounts();
   const sdk = getConnection(signer);
