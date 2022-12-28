@@ -1,0 +1,53 @@
+name: Build
+on: 
+  repository_dispatch:
+    types: [release-published]
+
+jobs:
+  release-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update version in package.json
+        id: version-bump
+        uses: jaywcjlove/github-action-package@v1.3.0
+        with:
+          version: ${{ github.event.client_payload.release_version }}
+
+      - run: echo "version - ${{ steps.info.outputs.version }}"
+
+      - name: Install 🔧
+        run: npm install
+
+      - name: Build 🔧
+        run: npm run build
+
+      - uses: actions/github-script@v6
+        id: create-release-pr
+        name: Create Release PR
+        with:
+          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          script: |
+            try {
+              const releaseBranchName = 'refs/heads/release-pr-' + '${{ github.event.client_payload.release_version }}';
+              const prBody = '✅ This PR was created by the Release PR action for version ' + '${{ github.event.client_payload.release_version }}';
+
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: releaseBranchName,
+                sha: baseBranchSHA
+              });
+
+              await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Release PR ' + '${{ github.event.client_payload.release_version }}',
+                head: releaseBranchName,
+                base: baseBranch,
+                body: prBody
+              });
+            } catch (error) {
+              console.log(error);
+              core.setFailed('Failed to create combined branch - maybe a branch by that name already exists?');
+              return;
+            }
