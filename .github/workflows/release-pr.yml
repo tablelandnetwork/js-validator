@@ -58,7 +58,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release-pr-test
+          branch: release-pr-${{ github.event.inputs.release_version }}
 
       - uses: actions/github-script@v6
         id: create-release-pr
@@ -70,7 +70,7 @@ jobs:
           script: |
             try {
               const tag = '${{ github.event.inputs.release_version }}';
-              const releaseBranchName = 'release-pr-test';
+              const releaseBranchName = 'release-pr-' + tag;
               const baseBranch = 'main';
               const prBody = '✅ This PR was created by the Release PR action for version ' + tag;
 
