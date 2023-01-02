@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v2.3.1
+        uses: actions/checkout@v3
 
       - name: Cache 📦
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -29,7 +29,7 @@ jobs:
             ${{ runner.os }}-
 
       - name: Setup Node Environment ⬢
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 18
 
@@ -40,13 +40,25 @@ jobs:
           path: "./package.json"
           version: ${{ github.event.inputs.release_version }}
 
-      - run: echo "version - ${{ steps.info.outputs.version }}"
+      - run: echo "version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
 
       - name: Install 🔧
         run: npm install
 
       - name: Build 🔧
         run: npm run build
+
+      - name: Commit files from the build
+        run: |
+          git config --local user.name  ${{ github.actor }}
+          git add --all
+          git commit -m "Release PR commit for ${{ github.event.inputs.release_version }}"
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: release-pr-test
 
       - uses: actions/github-script@v6
         id: create-release-pr
@@ -58,10 +70,11 @@ jobs:
           script: |
             try {
               const tag = '${{ github.event.inputs.release_version }}';
-              const releaseBranchName = 'refs/heads/release-pr-' + tag;
+              const releaseBranchName = 'release-pr-test';
               const baseBranch = 'main';
               const prBody = '✅ This PR was created by the Release PR action for version ' + tag;
 
+              // Create a pull request
               await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
