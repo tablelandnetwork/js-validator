@@ -1,7 +1,14 @@
-name: Release PR
+# The can be run manually via the github website if needed.
+# Normally the go-tableland repo should run an action that triggers
+# this to run when there is a release of the Validator.
+name: Release PR manual run
 on:
-  repository_dispatch:
-    types: [release-published]
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: "Version of this release. TODO: this should be coming from client client_payload, not inputs"
+        required: true
+        default: "0.0.0-pre.0"
 
 jobs:
   release-pr:
@@ -30,9 +37,9 @@ jobs:
         uses: jaywcjlove/github-action-package@v1.3.0
         with:
           path: "./package.json"
-          version: ${{ github.event.client_payload.release_version }}
+          version: ${{ github.event.inputs.release_version }}
 
-      - run: echo "version - ${{ steps.info.outputs.version }} - ${{ github.event.client_payload.release_version }}"
+      - run: echo "version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
 
       - name: Install 🔧
         run: npm install
@@ -44,13 +51,19 @@ jobs:
         run: |
           git config --local user.name  ${{ github.actor }}
           git add --all
-          git commit -m "Release PR commit for ${{ github.event.client_payload.release_version }}"
+          git commit -m "Release PR commit for ${{ github.event.inputs.release_version }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release-pr-${{ github.event.client_payload.release_version }}
+          branch: release-pr-${{ github.event.inputs.release_version }}
+
+      - name: Tag release
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ github.event.inputs.release_version }}
+          message: "Validator Release ${{ github.event.inputs.release_version }}"
 
       - uses: actions/github-script@v6
         id: create-release-pr
@@ -61,7 +74,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             try {
-              const tag = '${{ github.event.client_payload.release_version }}';
+              const tag = '${{ github.event.inputs.release_version }}';
               const releaseBranchName = 'release-pr-' + tag;
               const baseBranch = 'main';
               const prBody = '✅ This PR was created by the Release PR action for version ' + tag;
