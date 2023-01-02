@@ -52,6 +52,12 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: release-pr-${{ github.event.client_payload.release_version }}
 
+      - name: Tag release
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: ${{ github.event.client_payload.release_version }}
+          message: "Validator Release ${{ github.event.client_payload.release_version }}"
+
       - uses: actions/github-script@v6
         id: create-release-pr
         name: Create Release PR
