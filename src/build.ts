@@ -56,9 +56,8 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
   console.log(`fetching: ${url}`);
 
   const res = await fetch(url);
-  // TODO: Seems to be a bug in the fetch typings?
-  // @ts-expect-error
-  const downloadReadstream = Readable.fromWeb(res.body);
+  // TODO: Seems to be a bug in the fetch typings
+  const downloadReadstream = Readable.fromWeb(res.body as unknown as any);
 
   if (platarch.filetype === ".tar.gz") {
     await tarx(downloadReadstream);
