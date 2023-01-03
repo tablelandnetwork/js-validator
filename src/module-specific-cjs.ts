@@ -7,5 +7,12 @@ export const getDirname = function (): string {
 
 export const getVersion = function (): string {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  return require("../../package.json").version;
+  let version = require("../../package.json").version;
+
+  // strip a leading v off the version so that we normalize v0.1.0 and 0.1.0 to be the same value
+  if (/^v[0-9]/.test(version)) {
+    version = version.slice(1);
+  }
+
+  return version;
 };

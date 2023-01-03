@@ -50,7 +50,9 @@ const go = async function (): Promise<void> {
 };
 
 const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
-  const url = `https://github.com/tablelandnetwork/go-tableland/releases/download/v${
+  // TODO: put back the correct url once finished testing
+  // const url = `https://github.com/tablelandnetwork/go-tableland/releases/download/v${
+  const url = `https://github.com/joewagner/go-tableland/releases/download/v${
     version as string
   }/api-${platarch.name}${platarch.filetype}`;
   console.log(`fetching: ${url}`);
