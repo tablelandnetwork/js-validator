@@ -1,9 +1,7 @@
 // native
-import { /* createReadStream, */ createWriteStream } from "node:fs";
+import { createWriteStream } from "node:fs";
 import { join } from "node:path";
-import { Readable /* , pipeline */ } from "node:stream";
-// import { promisify } from "node:util";
-// import { createUnzip } from "node:zlib";
+import { Readable } from "node:stream";
 // lib
 import decompress from "decompress";
 import shelljs from "shelljs";
@@ -13,8 +11,6 @@ import { getDirname, getVersion } from "./module-specific.js";
 
 const version = getVersion();
 const _dirname = getDirname();
-
-// const pipe = promisify(pipeline);
 
 export interface Platarch {
   name: string;
@@ -35,6 +31,7 @@ const platarchs: Platarch[] = [
     name: "windows-amd64",
     filetype: ".zip",
   },
+  // TODO: add M1 build if/when that makes sense
 ];
 
 const binDirectory = join(_dirname, "..", "..", "bin");
@@ -75,6 +72,7 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
   const filename = platarch.name.includes("windows")
     ? platarch.name + ".exe"
     : platarch.name;
+  // all of the unzipped/extracted downloads expand to a single file named `api`
   shelljs.mv(join(binDirectory, "api"), join(binDirectory, filename));
 };
 
@@ -90,7 +88,6 @@ const tarx = async function (inputStream: Readable): Promise<void> {
 
 const unzip = async function (inputStream: Readable): Promise<void> {
   const tempFilename = join(binDirectory, "api-temp.zip");
-  // const outFilename = join(binDirectory, "api");
 
   // download the zip file to a temp location
   await new Promise<void>(function (resolve, reject) {
