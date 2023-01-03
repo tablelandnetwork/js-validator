@@ -69,8 +69,9 @@ jobs:
         id: create-release-pr
         name: Create Release PR
         with:
-          # use textile.io machine once this file is working
-          # github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          #       so that workflows can be triggered across repos.
+          #       This workflow can only be triggered via this repo so the standard GITHUB_TOKEN works.
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             try {
