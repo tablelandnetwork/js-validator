@@ -42,7 +42,8 @@ const go = async function (): Promise<void> {
   console.log(
     `installing validator binaries: ${platarchs
       .map((pa) => `${pa.name}${pa.filetype}`)
-      .join(", ")} for version: ${version as string}`
+      // eslint-disable-next-line
+      .join(", ")} for version: ${version}`
   );
   for (let i = 0; i < platarchs.length; i++) {
     await fetchAndUnpack(platarchs[i]);
@@ -52,9 +53,8 @@ const go = async function (): Promise<void> {
 };
 
 const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
-  const url = `${releaseRepoUrl}/releases/download/v${
-    version as string
-  }/api-${platarch.name}${platarch.filetype}`;
+  // eslint-disable-next-line
+  const url = `${releaseRepoUrl}/releases/download/v${version}/api-${platarch.name}${platarch.filetype}`;
   console.log(`fetching: ${url}`);
 
   const res = await fetch(url);
