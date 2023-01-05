@@ -12,6 +12,8 @@ import { getDirname, getVersion } from "./module-specific.js";
 const version = getVersion();
 const _dirname = getDirname();
 
+const releaseRepoUrl = "https://github.com/tablelandnetwork/go-tableland";
+
 export interface Platarch {
   name: string;
   filetype: string;
@@ -50,9 +52,7 @@ const go = async function (): Promise<void> {
 };
 
 const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
-  // TODO: put back the correct url once finished testing
-  // const url = `https://github.com/tablelandnetwork/go-tableland/releases/download/v${
-  const url = `https://github.com/joewagner/go-tableland/releases/download/v${
+  const url = `${releaseRepoUrl}/releases/download/v${
     version as string
   }/api-${platarch.name}${platarch.filetype}`;
   console.log(`fetching: ${url}`);

@@ -70,8 +70,7 @@ jobs:
         with:
           # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
           #       so that workflows can be triggered across repos.
-          # TODO: I set up a RELEASE_TOKEN in my person forks to see if this works end to end
-          github-token: ${{secrets.RELEASE_TOKEN}}
+          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
           script: |
             try {
               const tag = '${{ github.event.inputs.release_version }}';
