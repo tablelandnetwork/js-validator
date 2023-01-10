@@ -13,7 +13,11 @@
     "project": "./lint.tsconfig.json"
   },
   "rules": {
-    "import/order": "warn"
+    "import/order": "warn",
+    "@typescript-eslint/no-confusing-void-expression": [
+      "error",
+      { "ignoreArrowShorthand": true }
+    ]
   },
   "ignorePatterns": ["/dist/"]
 }
