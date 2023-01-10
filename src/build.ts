@@ -78,11 +78,11 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
 };
 
 const tarx = async function (inputStream: Readable): Promise<void> {
-  await new Promise((resolve, reject) => {
+  return await new Promise((resolve, reject) => {
     // We can pipe the fetch response straight to tar
     const sink = inputStream.pipe(tar.x({ C: binDirectory }));
 
-    sink.on("finish", () => resolve(undefined));
+    sink.on("finish", () => resolve());
     sink.on("error", (err: Error) => reject(err));
   });
 };

@@ -14,10 +14,7 @@
   },
   "rules": {
     "import/order": "warn",
-    "@typescript-eslint/no-confusing-void-expression": [
-      "error",
-      { "ignoreArrowShorthand": true }
-    ]
+    "@typescript-eslint/no-confusing-void-expression": "off"
   },
   "ignorePatterns": ["/dist/"]
 }
