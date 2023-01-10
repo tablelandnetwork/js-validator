@@ -7,9 +7,9 @@ import decompress from "decompress";
 import shelljs from "shelljs";
 import tar from "tar";
 // src
-import { getDirname, getVersion } from "./module-specific.js";
+import { getDirname } from "./module-specific.js";
 
-const version = getVersion();
+const version = "0.0.1-alpha-3";
 const _dirname = getDirname();
 
 const releaseRepoUrl = "https://github.com/tablelandnetwork/go-tableland";
