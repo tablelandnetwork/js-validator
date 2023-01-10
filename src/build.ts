@@ -46,7 +46,14 @@ const go = async function (): Promise<void> {
       .join(", ")} for version: ${version}`
   );
   for (let i = 0; i < platarchs.length; i++) {
-    await fetchAndUnpack(platarchs[i]);
+    try {
+      await fetchAndUnpack(platarchs[i]);
+    } catch (err) {
+      // If the version of this package doesn't match a release there will not be anything to fetch,
+      // but we don't want the build to totally fail in case someone wants to publish a custom build
+      console.log("could not fetch:", platarchs[i]);
+      console.log(err);
+    }
   }
 
   console.log("done installing validator binaries");
