@@ -31,13 +31,16 @@ jobs:
         with:
           node-version: 18
 
-      - name: Update version in package.json
-        id: version-bump
+      - name: Update validatorVersion in package.json
+        id: validator-version-bump
         uses: jaywcjlove/github-action-package@v1.3.0
         with:
-          version: ${{ github.event.inputs.release_version }}
+          data: |
+            {
+              "validatorVersion": ${{ github.event.inputs.release_version }}
+            }
 
-      - run: echo "version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
+      - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
 
       - name: Install 🔧
         run: npm install
