@@ -37,7 +37,7 @@ jobs:
         with:
           data: |
             {
-              "validatorVersion": ${{ github.event.inputs.release_version }}
+              "validatorVersion": "${{ github.event.inputs.release_version }}"
             }
 
       - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
