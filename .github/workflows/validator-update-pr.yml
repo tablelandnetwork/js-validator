@@ -5,12 +5,12 @@ name: Release PR
 on:
   workflow_dispatch:
     inputs:
-      release_version:
-        description: "Version of this release"
+      validator_version:
+        description: "Validator version"
         required: true
 
 jobs:
-  release-pr:
+  validator-update-pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
@@ -37,10 +37,10 @@ jobs:
         with:
           data: |
             {
-              "validatorVersion": "${{ github.event.inputs.release_version }}"
+              "validatorVersion": "${{ github.event.inputs.validator_version }}"
             }
 
-      - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.release_version }}"
+      - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.validator_version }}"
 
       - name: Install 🔧
         run: npm install
@@ -53,40 +53,34 @@ jobs:
           git config --local user.name  ${{ github.actor }}
           npm run prettier:fix
           git add --all
-          git commit -m "Release PR commit for ${{ github.event.inputs.release_version }}"
+          git commit -m "Validator version update for ${{ github.event.inputs.validator_version }}"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: release-pr-${{ github.event.inputs.release_version }}
-
-      - name: Tag release
-        uses: rickstaa/action-create-tag@v1
-        with:
-          tag: ${{ github.event.inputs.release_version }}
-          message: "Validator Release ${{ github.event.inputs.release_version }}"
+          branch: validator-update-pr-${{ github.event.inputs.validator_version }}
 
       - uses: actions/github-script@v6
-        id: create-release-pr
-        name: Create Release PR
+        id: create-validator-update-pr
+        name: Create Validator Update PR
         with:
           # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
           #       so that workflows can be triggered across repos.
           github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
           script: |
             try {
-              const tag = '${{ github.event.inputs.release_version }}';
-              const releaseBranchName = 'release-pr-' + tag;
+              const version = '${{ github.event.inputs.validator_version }}';
+              const branchName = 'validator-update-pr-' + version;
               const baseBranch = 'main';
-              const prBody = '✅ This PR was created by the Release PR action for version ' + tag;
+              const prBody = '✅ This PR was created by the Validator Update PR action for version ' + version;
 
               // Create a pull request
               await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: 'Release PR ' + tag,
-                head: releaseBranchName,
+                title: 'Release PR ' + version,
+                head: branchName,
                 base: baseBranch,
                 body: prBody
               });
