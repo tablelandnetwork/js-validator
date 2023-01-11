@@ -3,8 +3,6 @@
 # this to run when there is a release of the Validator.
 name: Validator Update PR
 on:
-  pull_request:
-    types: [opened, reopened]
   workflow_dispatch:
     inputs:
       validator_version:
@@ -18,76 +16,76 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
 
-      # - name: Cache 📦
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
-      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-build-${{ env.cache-name }}-
-      #       ${{ runner.os }}-build-
-      #       ${{ runner.os }}-
+      - name: Cache 📦
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm # npm cache files are stored in `~/.npm` on Linux/macOS
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
-      # - name: Setup Node Environment ⬢
-      #   uses: actions/setup-node@v3
-      #   with:
-      #     node-version: 18
+      - name: Setup Node Environment ⬢
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-      # - name: Update validatorVersion in package.json
-      #   id: validator-version-bump
-      #   uses: jaywcjlove/github-action-package@v1.3.0
-      #   with:
-      #     data: |
-      #       {
-      #         "validatorVersion": "${{ github.event.inputs.validator_version }}"
-      #       }
+      - name: Update validatorVersion in package.json
+        id: validator-version-bump
+        uses: jaywcjlove/github-action-package@v1.3.0
+        with:
+          data: |
+            {
+              "validatorVersion": "${{ github.event.inputs.validator_version }}"
+            }
 
-      # - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.validator_version }}"
+      - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.validator_version }}"
 
-      # - name: Install 🔧
-      #   run: npm install
+      - name: Install 🔧
+        run: npm install
 
-      # - name: Build 🔧
-      #   run: npm run build
+      - name: Build 🔧
+        run: npm run build
 
-      # - name: Commit files from the build
-      #   run: |
-      #     git config --local user.name  ${{ github.actor }}
-      #     npm run prettier:fix
-      #     git add --all
-      #     git commit -m "Validator version update for ${{ github.event.inputs.validator_version }}"
+      - name: Commit files from the build
+        run: |
+          git config --local user.name  ${{ github.actor }}
+          npm run prettier:fix
+          git add --all
+          git commit -m "Validator version update for ${{ github.event.inputs.validator_version }}"
 
-      # - name: Push changes
-      #   uses: ad-m/github-push-action@master
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      #     branch: validator-update-pr-${{ github.event.inputs.validator_version }}
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: validator-update-pr-${{ github.event.inputs.validator_version }}
 
-      # - uses: actions/github-script@v6
-      #   id: create-validator-update-pr
-      #   name: Create Validator Update PR
-      #   with:
-      #     # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
-      #     #       so that workflows can be triggered across repos.
-      #     github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
-      #     script: |
-      #       try {
-      #         const version = '${{ github.event.inputs.validator_version }}';
-      #         const branchName = 'validator-update-pr-' + version;
-      #         const baseBranch = 'main';
-      #         const prBody = '✅ This PR was created by the Validator Update PR action for version ' + version;
+      - uses: actions/github-script@v6
+        id: create-validator-update-pr
+        name: Create Validator Update PR
+        with:
+          # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          #       so that workflows can be triggered across repos.
+          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
+          script: |
+            try {
+              const version = '${{ github.event.inputs.validator_version }}';
+              const branchName = 'validator-update-pr-' + version;
+              const baseBranch = 'main';
+              const prBody = '✅ This PR was created by the Validator Update PR action for version ' + version;
 
-      #         // Create a pull request
-      #         await github.rest.pulls.create({
-      #           owner: context.repo.owner,
-      #           repo: context.repo.repo,
-      #           title: 'Release PR ' + version,
-      #           head: branchName,
-      #           base: baseBranch,
-      #           body: prBody
-      #         });
-      #       } catch (err) {
-      #         console.log(err);
-      #         core.setFailed('Failed to create release branch: ' + err.message);
-      #         return;
-      #       }
+              // Create a pull request
+              await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'Release PR ' + version,
+                head: branchName,
+                base: baseBranch,
+                body: prBody
+              });
+            } catch (err) {
+              console.log(err);
+              core.setFailed('Failed to create release branch: ' + err.message);
+              return;
+            }
