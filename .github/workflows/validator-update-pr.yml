@@ -42,12 +42,6 @@ jobs:
 
       - run: echo "validator version - ${{ steps.info.outputs.version }} - ${{ github.event.inputs.validator_version }}"
 
-      - name: Install 🔧
-        run: npm install
-
-      - name: Build 🔧
-        run: npm run build
-
       - name: Commit files from the build
         run: |
           git config --local user.name  ${{ github.actor }}
