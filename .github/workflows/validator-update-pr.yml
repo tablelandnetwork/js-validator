@@ -79,7 +79,7 @@ jobs:
               await github.rest.pulls.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: 'Release PR ' + version,
+                title: 'Validator Update PR ' + version,
                 head: branchName,
                 base: baseBranch,
                 body: prBody
