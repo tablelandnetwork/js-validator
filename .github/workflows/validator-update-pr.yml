@@ -1,7 +1,7 @@
 # The can be run manually via the github website if needed.
 # Normally the go-tableland repo will run an action that triggers
 # this to run when there is a release of the Validator.
-name: Release PR
+name: Validator Update PR
 on:
   workflow_dispatch:
     inputs:
