@@ -19,7 +19,7 @@
   "files": [
     "bin/**/*",
     "dist/**/*.js?(.map)",
-    "dist/**/*.json",
+    "dist/**/package.json",
     "dist/**/*.d.ts",
     "src/**/*.ts"
   ],
