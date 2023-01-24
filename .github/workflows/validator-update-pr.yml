@@ -49,6 +49,8 @@ jobs:
         run: npm run build
 
       - name: Commit files from the build
+        with:
+          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
         run: |
           git config --local user.name  ${{ github.actor }}
           npm run prettier:fix
