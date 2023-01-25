@@ -48,44 +48,25 @@ jobs:
       - name: Build 🛠
         run: npm run build
 
-      - name: Commit files from the build
-        run: |
-          git config --local user.name  ${{ github.actor }}
-          npm run prettier:fix
-          git add --all
-          git commit -S -sm "Validator version update for ${{ github.event.inputs.validator_version }}"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          gpg_private_key: ${{ secrets.TEXTILEIO_MACHINE_GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.TEXTILEIO_MACHINE_GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Run prettier
+        run: npm run prettier:fix
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          token: ${{ secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN }}
+          committer: textileio-machine <40302381+textileio-machine@users.noreply.github.com>
+          title: Validator Update PR ${{ github.event.inputs.validator_version }}
+          body: ✅ This PR was created by the Validator Update PR action for version ${{ github.event.inputs.validator_version }}
           branch: validator-update-pr-${{ github.event.inputs.validator_version }}
-
-      - uses: actions/github-script@v6
-        id: create-validator-update-pr
-        name: Create Validator Update PR
-        with:
-          # NOTE: The automatic release workflow uses ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
-          #       so that workflows can be triggered across repos.
-          github-token: ${{secrets.TEXTILEIO_MACHINE_ACCESS_TOKEN}}
-          script: |
-            try {
-              const version = '${{ github.event.inputs.validator_version }}';
-              const branchName = 'validator-update-pr-' + version;
-              const baseBranch = 'main';
-              const prBody = '✅ This PR was created by the Validator Update PR action for version ' + version;
-
-              // Create a pull request
-              await github.rest.pulls.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: 'Validator Update PR ' + version,
-                head: branchName,
-                base: baseBranch,
-                body: prBody
-              });
-            } catch (err) {
-              console.log(err);
-              core.setFailed('Failed to create release branch: ' + err.message);
-              return;
-            }
+          signoff: true
+          commit-message: validator update ${{ github.event.inputs.validator_version }}
