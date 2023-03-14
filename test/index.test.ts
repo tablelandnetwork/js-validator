@@ -1,32 +1,47 @@
 import { strictEqual, deepStrictEqual } from "assert";
 import { describe, test } from "mocha";
-import { getAccounts, getConnection } from "@tableland/local";
+import { getAccounts, getDatabase, getValidator } from "@tableland/local";
 
 describe("index", function () {
   this.timeout(25000);
   // Note that we're using the second account here
   const [, signer] = getAccounts();
-  const sdk = getConnection(signer);
+  const sdk = getDatabase(signer);
+  const validator = getValidator();
 
   test("create", async function () {
-    const { name } = await sdk.create("counter integer", { prefix: "table" });
-    strictEqual(name, "table_31337_2");
+    const { meta } = await sdk
+      .prepare("create table my_table (counter integer);")
+      .all();
+    strictEqual(meta.txn?.name, "my_table_31337_2");
   });
 
   test("insert", async function () {
-    const { hash } = await sdk.write("insert into table_31337_2 values (1);");
-    const txnReceipt = await sdk.receipt(hash);
+    const { meta } = await sdk
+      .prepare("insert into my_table_31337_2 values (1);")
+      .all();
+    const txnReceipt = await validator.receiptByTransactionHash({
+      chainId: 31337,
+      transactionHash: meta.txn?.transactionHash ?? "",
+    });
     strictEqual(txnReceipt?.chainId, 31337);
   });
 
   test("update", async function () {
-    const { hash } = await sdk.write("update table_31337_2 set counter=2;");
-    const txnReceipt = await sdk.receipt(hash);
+    const { meta } = await sdk
+      .prepare("update my_table_31337_2 set counter=2;")
+      .all();
+    const txnReceipt = await validator.receiptByTransactionHash({
+      chainId: 31337,
+      transactionHash: meta.txn?.transactionHash ?? "",
+    });
     strictEqual(txnReceipt?.chainId, 31337);
   });
 
   test("query", async function () {
-    const { rows } = await sdk.read("select * from table_31337_2;");
-    deepStrictEqual(rows[0], [2]);
+    const { results } = await sdk
+      .prepare("select * from my_table_31337_2;")
+      .all();
+    deepStrictEqual(results, [{ counter: 2 }]);
   });
 });
