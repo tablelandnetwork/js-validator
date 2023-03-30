@@ -45,7 +45,7 @@
   ],
   "license": "MIT AND Apache-2.0",
   "devDependencies": {
-    "@tableland/local": "^1.0.0",
+    "@tableland/local": "^1.1.0",
     "@types/decompress": "^4.2.4",
     "@types/mocha": "^10.0.1",
     "@types/node": "^18.11.17",
