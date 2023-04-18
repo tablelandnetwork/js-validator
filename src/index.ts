@@ -1,7 +1,8 @@
+// aside from holding the compiled binaries to run a validator for all of our supported systems
+// this repo's main functionality is to expose the full path to the binary for the system that
+// loaded this file
+
 import { resolve } from "node:path";
-// TODO: aside from holding the compiled binaries to run a validator for all of our supported systems
-//       this repo's only functionality is to expose the full path to the binary for the system that
-//       loaded this file
 // NOTE: We are creating this file in the prebuild.sh script so that we can support cjs and esm
 import { getDirname } from "./module-specific.js";
 const _dirname = getDirname();

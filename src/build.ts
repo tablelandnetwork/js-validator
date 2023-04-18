@@ -26,14 +26,21 @@ const platarchs: Platarch[] = [
     filetype: ".tar.gz",
   },
   {
+    name: "darwin-arm64",
+    filetype: ".tar.gz",
+  },
+  {
     name: "linux-amd64",
+    filetype: ".tar.gz",
+  },
+  {
+    name: "linux-arm64",
     filetype: ".tar.gz",
   },
   {
     name: "windows-amd64",
     filetype: ".zip",
   },
-  // TODO: add M1 build if/when that makes sense
 ];
 
 const binDirectory = join(_dirname, "..", "..", "bin");
