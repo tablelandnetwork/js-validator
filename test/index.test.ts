@@ -9,14 +9,30 @@ describe("index", function () {
   const sdk = getDatabase(signer);
   const validator = getValidator();
 
-  test("create", async function () {
+  test("create one", async function () {
     const { meta } = await sdk
       .prepare("create table my_table (counter integer);")
       .all();
     strictEqual(meta.txn?.name, "my_table_31337_2");
   });
 
-  test("insert", async function () {
+  // TODO: need to wait until the new sdk is available on npm
+  test.skip("create batch", async function () {
+    const [{ meta }] = await sdk.batch([
+      sdk.prepare("create table my_table (counter integer);"),
+      sdk.prepare("create table my_other_table (name text);"),
+    ]);
+
+    // @ts-expect-error update types in `@tableland/sdk` via `@tableland/local`
+    deepStrictEqual(meta.txn?.names, [
+      "my_table_31337_3",
+      "my_other_table_31337_4",
+    ]);
+    // @ts-expect-error update types in `@tableland/sdk` via `@tableland/local`
+    deepStrictEqual(meta.txn?.tableIds, ["3", "4"]);
+  });
+
+  test("insert one", async function () {
     const { meta } = await sdk
       .prepare("insert into my_table_31337_2 values (1);")
       .all();
@@ -24,7 +40,25 @@ describe("index", function () {
       chainId: 31337,
       transactionHash: meta.txn?.transactionHash ?? "",
     });
+
     strictEqual(txnReceipt?.chainId, 31337);
+  });
+
+  // TODO: need to wait until the new sdk is available on npm
+  test.skip("insert batch", async function () {
+    const [{ meta }] = await sdk.batch([
+      sdk.prepare("insert into my_table_31337_3 values (1);"),
+      sdk.prepare("insert into my_other_table_31337_4 values ('my test');"),
+    ]);
+
+    const txnReceipt = await validator.receiptByTransactionHash({
+      chainId: 31337,
+      transactionHash: meta.txn?.transactionHash ?? "",
+    });
+
+    strictEqual(txnReceipt?.chainId, 31337);
+    // @ts-expect-error update types in `@tableland/sdk` via `@tableland/local`
+    deepStrictEqual(meta.txn?.tableIds, ["3", "4"]);
   });
 
   test("update", async function () {
