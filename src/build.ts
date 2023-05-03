@@ -87,8 +87,9 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
   const filename = platarch.name.includes("windows")
     ? platarch.name + ".exe"
     : platarch.name;
-  // all of the unzipped/extracted downloads expand to a single file named `api`
-  shelljs.mv(join(binDirectory, "api"), join(binDirectory, filename));
+  const binName = platarch.name.includes("windows") ? "api.exe" : "api";
+  // all of the unzipped/extracted downloads expand to a single file named `api` except window, which is `api.exe`
+  shelljs.mv(join(binDirectory, binName), join(binDirectory, filename));
 };
 
 const tarx = async function (inputStream: Readable): Promise<void> {
