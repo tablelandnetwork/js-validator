@@ -26,14 +26,21 @@ const platarchs: Platarch[] = [
     filetype: ".tar.gz",
   },
   {
+    name: "darwin-arm64",
+    filetype: ".tar.gz",
+  },
+  {
     name: "linux-amd64",
+    filetype: ".tar.gz",
+  },
+  {
+    name: "linux-arm64",
     filetype: ".tar.gz",
   },
   {
     name: "windows-amd64",
     filetype: ".zip",
   },
-  // TODO: add M1 build if/when that makes sense
 ];
 
 const binDirectory = join(_dirname, "..", "..", "bin");
@@ -80,8 +87,9 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
   const filename = platarch.name.includes("windows")
     ? platarch.name + ".exe"
     : platarch.name;
-  // all of the unzipped/extracted downloads expand to a single file named `api`
-  shelljs.mv(join(binDirectory, "api"), join(binDirectory, filename));
+  const binName = platarch.name.includes("windows") ? "api.exe" : "api";
+  // all of the unzipped/extracted downloads expand to a single file named `api` except window, which is `api.exe`
+  shelljs.mv(join(binDirectory, binName), join(binDirectory, filename));
 };
 
 const tarx = async function (inputStream: Readable): Promise<void> {
