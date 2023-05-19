@@ -1,7 +1,7 @@
 {
   "name": "@tableland/validator",
   "version": "0.0.0",
-  "validatorVersion": "1.4.1",
+  "validatorVersion": "1.5.0-beta-1",
   "description": "tableland validator binary repository",
   "publishConfig": {
     "access": "public"
