@@ -10,7 +10,7 @@ import tar from "tar";
 import { getDirname, getVersion } from "./module-specific.js";
 
 const version = getVersion();
-const _dirname = getDirname();
+const _dirname: string = getDirname();
 
 const releaseRepoUrl = "https://github.com/tablelandnetwork/go-tableland";
 
@@ -72,8 +72,10 @@ const fetchAndUnpack = async function (platarch: Platarch): Promise<void> {
   console.log(`fetching: ${url}`);
 
   const res = await fetch(url);
-  // TODO: Seems to be a bug in the fetch typings
-  const downloadReadstream = Readable.fromWeb(res.body as unknown as any);
+  if (res.body === null) throw new Error("could not fetch release");
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment, @typescript-eslint/prefer-ts-expect-error
+  // @ts-ignore node and web typings still don't work together, but this works correctly
+  const downloadReadstream = Readable.fromWeb(res.body);
 
   if (platarch.filetype === ".tar.gz") {
     await tarx(downloadReadstream);
