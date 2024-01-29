@@ -12,7 +12,7 @@ export const getDirname = function (): string {
 export const getVersion = function (): string {
   // Need to enable importing a json file with typescript
   const _require = createRequire(import.meta.url);
-  let version = _require("../../package.json").validatorVersion;
+  let version: string = _require("../../package.json").validatorVersion;
 
   // strip a leading v off the version so that we normalize v0.1.0 and 0.1.0 to be the same value
   if (/^v[0-9]/.test(version)) {

@@ -5,7 +5,7 @@
 import { resolve } from "node:path";
 // NOTE: We are creating this file in the prebuild.sh script so that we can support cjs and esm
 import { getDirname } from "./module-specific.js";
-const _dirname = getDirname();
+const _dirname: string = getDirname();
 
 // ref for all possilbe values of process.platform
 const platformMap = {
@@ -48,6 +48,7 @@ const archMap = {
   ppc64: platformMap, // not actively supported
   s390: platformMap, // not actively supported
   s390x: platformMap, // not actively supported
+  riscv64: platformMap, // not actively supported
 
   // a.k.a. amd64
   x64: {
