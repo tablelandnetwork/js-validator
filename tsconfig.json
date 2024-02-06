@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "strict": true,
     "allowJs": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "include": ["src/index.ts", "src/build.ts"],
+  "include": ["src/index.ts", "src/build.ts"]
 }
