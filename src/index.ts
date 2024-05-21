@@ -23,7 +23,7 @@ const platformMap = {
 };
 
 // top level keys are all possible values for process.arch
-const archMap = {
+const archMap: Record<string, Record<string, string>> = {
   arm: platformMap, // not actively supported
 
   // we don't have an automated build setup for these, but a manual build is
