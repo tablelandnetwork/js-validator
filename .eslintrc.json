@@ -6,7 +6,7 @@
     "node": true
   },
   "plugins": ["@typescript-eslint", "import"],
-  "extends": ["standard-with-typescript", "prettier"],
+  "extends": ["prettier"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 12,
