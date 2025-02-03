@@ -56,7 +56,7 @@
     "c8": "^10.0.0",
     "decompress": "^4.2.1",
     "eslint": "^8.52.0",
-    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-prettier": "^10.0.1",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.29.0",
     "mocha": "^11.0.1",
